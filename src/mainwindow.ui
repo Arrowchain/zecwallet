@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>ZecWallet</string>
+   <string>ArrowWallet</string>
   </property>
   <property name="windowIcon">
    <iconset resource="../application.qrc">
@@ -76,31 +76,7 @@
                 </layout>
                </item>
                <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_2">
-                 <item>
-                  <widget class="QLabel" name="label_2">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="text">
-                    <string>Transparent</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QLabel" name="balTransparent">
-                   <property name="text">
-                    <string/>
-                   </property>
-                   <property name="alignment">
-                    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
+                <layout class="QHBoxLayout" name="horizontalLayout_2"/>
                </item>
                <item>
                 <widget class="Line" name="line">
@@ -359,8 +335,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>928</width>
-                <height>353</height>
+                <width>890</width>
+                <height>269</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="sendToLayout">
@@ -697,19 +673,6 @@
                  </property>
                 </widget>
                </item>
-               <item>
-                <widget class="QRadioButton" name="rdioTAddr">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="text">
-                  <string>t-Addr</string>
-                 </property>
-                </widget>
-               </item>
               </layout>
              </item>
              <item>
@@ -898,7 +861,7 @@
       </widget>
       <widget class="QWidget" name="tab_5">
        <attribute name="title">
-        <string>zcashd</string>
+        <string notr="true">arrowd</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_7">
         <item>
@@ -1045,7 +1008,7 @@
      <x>0</x>
      <y>0</y>
      <width>968</width>
-     <height>19</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -1070,6 +1033,7 @@
     <addaction name="actionDonate"/>
     <addaction name="actionCheck_for_Updates"/>
     <addaction name="actionAbout"/>
+    <addaction name="actionShow_Debug"/>
    </widget>
    <widget class="QMenu" name="menuApps">
     <property name="title">
@@ -1189,6 +1153,11 @@
     <string>Request zcash...</string>
    </property>
   </action>
+  <action name="actionShow_Debug">
+   <property name="text">
+    <string>Show Debug...</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
@@ -1220,7 +1189,6 @@
   <tabstop>sendTransactionButton</tabstop>
   <tabstop>cancelSendButton</tabstop>
   <tabstop>rdioZSAddr</tabstop>
-  <tabstop>rdioTAddr</tabstop>
   <tabstop>listRecieveAddresses</tabstop>
   <tabstop>btnRecieveNewAddr</tabstop>
   <tabstop>txtRecieve</tabstop>

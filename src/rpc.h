@@ -65,6 +65,7 @@ public:
 
     void fillTxJsonParams(json& params, Tx tx);
     void sendZTransaction(json params, const std::function<void(json)>& cb, const std::function<void(QString)>& err);
+    void sendAnything(json payload, const std::function<void(json)>& cb, const std::function<void(QString)>& err);
     void watchTxStatus();
 
     const QMap<QString, WatchedTx> getWatchingTxns() { return watchingOps; }
@@ -119,7 +120,7 @@ private:
     void getZUnspent            (const std::function<void(json)>& cb);
     void getTransactions        (const std::function<void(json)>& cb);
     void getZAddresses          (const std::function<void(json)>& cb);
-    void getTAddresses          (const std::function<void(json)>& cb);
+//    void getTAddresses          (const std::function<void(json)>& cb);
 
 
     Connection*                 conn                        = nullptr;
@@ -144,7 +145,7 @@ private:
     MainWindow*                 main;
     Turnstile*                  turnstile;
 
-    // Sapling turnstile migration status (for the zcashd v2.0.5 tool)
+    // Sapling turnstile migration status (for the arrowd v2.0.5 tool)
     MigrationStatus             migrationStatus;
 
     // Current balance in the UI. If this number updates, then refresh the UI

@@ -17,6 +17,7 @@
 #include "senttxstore.h"
 #include "connection.h"
 #include "requestdialog.h"
+#include "debugdialog.h"
 #include "websockets.h"
 
 using json = nlohmann::json;
@@ -33,7 +34,6 @@ MainWindow::MainWindow(QWidget *parent) :
     
     // Settings editor 
     setupSettingsModal();
-
     // Set up exit action
     QObject::connect(ui->actionExit, &QAction::triggered, this, &MainWindow::close);
 
@@ -59,6 +59,10 @@ MainWindow::MainWindow(QWidget *parent) :
     // Pay Zcash URI
     QObject::connect(ui->actionPay_URI, &QAction::triggered, [=] () {
         payZcashURI();
+    });
+
+    QObject::connect(ui->actionShow_Debug, &QAction::triggered, [=] () {
+        DebugDialog::showDebug(this);
     });
 
     // Import Private Key
@@ -473,7 +477,7 @@ void MainWindow::setupSettingsModal() {
         settings.chkCustomFees->setChecked(Settings::getInstance()->getAllowCustomFees());
 
         // Auto shielding
-        settings.chkAutoShield->setChecked(Settings::getInstance()->getAutoShield());
+//        settings.chkAutoShield->setChecked(Settings::getInstance()->getAutoShield());
 
         // Use Tor
         bool isUsingTor = false;
@@ -484,7 +488,7 @@ void MainWindow::setupSettingsModal() {
         if (rpc->getEZcashD() == nullptr) {
             settings.chkTor->setEnabled(false);
             settings.lblTor->setEnabled(false);
-            QString tooltip = tr("Tor configuration is available only when running an embedded zcashd.");
+            QString tooltip = tr("Tor configuration is available only when running an embedded arrowd.");
             settings.chkTor->setToolTip(tooltip);
             settings.lblTor->setToolTip(tooltip);
         }
@@ -520,13 +524,13 @@ void MainWindow::setupSettingsModal() {
         // Connection tab by default
         settings.tabWidget->setCurrentIndex(0);
 
-        // Enable the troubleshooting options only if using embedded zcashd
+        // Enable the troubleshooting options only if using embedded arrowd
         if (!rpc->isEmbedded()) {
             settings.chkRescan->setEnabled(false);
-            settings.chkRescan->setToolTip(tr("You're using an external zcashd. Please restart zcashd with -rescan"));
+            settings.chkRescan->setToolTip(tr("You're using an external zcashd. Please restart arrowd with -rescan"));
 
             settings.chkReindex->setEnabled(false);
-            settings.chkReindex->setToolTip(tr("You're using an external zcashd. Please restart zcashd with -reindex"));
+            settings.chkReindex->setToolTip(tr("You're using an external zcashd. Please restart arrowd with -reindex"));
         }
 
         if (settingsDialog.exec() == QDialog::Accepted) {
@@ -538,7 +542,7 @@ void MainWindow::setupSettingsModal() {
                 ui->minerFeeAmt->setText(Settings::getDecimalString(Settings::getMinerFee()));
 
             // Auto shield
-            Settings::getInstance()->setAutoShield(settings.chkAutoShield->isChecked());
+//            Settings::getInstance()->setAutoShield(settings.chkAutoShield->isChecked());
 
             if (!isUsingTor && settings.chkTor->isChecked()) {
                 // If "use tor" was previously unchecked and now checked
@@ -546,7 +550,7 @@ void MainWindow::setupSettingsModal() {
                 rpc->getConnection()->config->proxy = "proxy=127.0.0.1:9050";
 
                 QMessageBox::information(this, tr("Enable Tor"), 
-                    tr("Connection over Tor has been enabled. To use this feature, you need to restart ZecWallet."), 
+                    tr("Connection over Tor has been enabled. To use this feature, you need to restart ArrowWallet."),
                     QMessageBox::Ok);
             }
 
@@ -556,7 +560,7 @@ void MainWindow::setupSettingsModal() {
                 rpc->getConnection()->config->proxy.clear();
 
                 QMessageBox::information(this, tr("Disable Tor"),
-                    tr("Connection over Tor has been disabled. To fully disconnect from Tor, you need to restart ZecWallet."),
+                    tr("Connection over Tor has been disabled. To fully disconnect from Tor, you need to restart ArrowWallet."),
                     QMessageBox::Ok);
             }
 
@@ -585,9 +589,9 @@ void MainWindow::setupSettingsModal() {
             }
 
             if (showRestartInfo) {
-                auto desc = tr("ZecWallet needs to restart to rescan/reindex. ZecWallet will now close, please restart ZecWallet to continue");
+                auto desc = tr("ZecWallet needs to restart to rescan/reindex. ArrowWallet will now close, please restart ArrowWallet to continue");
                 
-                QMessageBox::information(this, tr("Restart ZecWallet"), desc, QMessageBox::Ok);
+                QMessageBox::information(this, tr("Restart ArrowWallet"), desc, QMessageBox::Ok);
                 QTimer::singleShot(1, [=]() { this->close(); });
             }
         }
@@ -617,9 +621,9 @@ void MainWindow::donate() {
                             Settings::getInstance()->isSaplingAddress(ui->inputsCombo->currentText())));
     ui->Address1->setCursorPosition(0);
     ui->Amount1->setText("0.01");
-    ui->MemoTxt1->setText(tr("Thanks for supporting ZecWallet!"));
+    ui->MemoTxt1->setText(tr("Thanks for supporting ArrowWallet!"));
 
-    ui->statusBar->showMessage(tr("Donate 0.01 ") % Settings::getTokenName() % tr(" to support ZecWallet"));
+    ui->statusBar->showMessage(tr("Donate 0.01 ") % Settings::getTokenName() % tr(" to support ArrowWallet"));
 
     // And switch to the send tab.
     ui->tabWidget->setCurrentIndex(1);
@@ -817,7 +821,7 @@ void MainWindow::payZcashURI(QString uri, QString myAddr) {
 
     // If there was no URI passed, ask the user for one.
     if (uri.isEmpty()) {
-        uri = QInputDialog::getText(this, tr("Paste Zcash URI"),
+        uri = QInputDialog::getText(this, tr("Paste Arrow URI"),
             "Zcash URI" + QString(" ").repeated(180));
     }
 
@@ -829,7 +833,7 @@ void MainWindow::payZcashURI(QString uri, QString myAddr) {
     qDebug() << "Recieved URI " << uri;
     PaymentURI paymentInfo = Settings::parseURI(uri);
     if (!paymentInfo.error.isEmpty()) {
-        QMessageBox::critical(this, tr("Error paying zcash URI"), 
+        QMessageBox::critical(this, tr("Error paying arrow URI"),
                 tr("URI should be of the form 'zcash:<addr>?amt=x&memo=y") + "\n" + paymentInfo.error);
         return;
     }
@@ -866,7 +870,7 @@ void MainWindow::importPrivKey() {
 
     pui.buttonBox->button(QDialogButtonBox::Save)->setVisible(false);
     pui.helpLbl->setText(QString() %
-                        tr("Please paste your private keys (z-Addr or t-Addr) here, one per line") % ".\n" %
+                        tr("Please paste your private keys (z-Addr only) here, one per line") % ".\n" %
                         tr("The keys will be imported into your connected zcashd node"));  
 
     if (d.exec() == QDialog::Accepted && !pui.privKeyTxt->toPlainText().trimmed().isEmpty()) {
@@ -898,7 +902,7 @@ void MainWindow::importPrivKey() {
  */
 void MainWindow::exportTransactions() {
     // First, get the export file name
-    QString exportName = "zcash-transactions-" + QDateTime::currentDateTime().toString("yyyyMMdd") + ".csv";
+    QString exportName = "arrow-transactions-" + QDateTime::currentDateTime().toString("yyyyMMdd") + ".csv";
 
     QUrl csvName = QFileDialog::getSaveFileUrl(this, 
             tr("Export transactions"), exportName, "CSV file (*.csv)");
@@ -921,7 +925,7 @@ void MainWindow::backupWalletDat() {
         return;
 
     QDir zcashdir(rpc->getConnection()->config->zcashDir);
-    QString backupDefaultName = "zcash-wallet-backup-" + QDateTime::currentDateTime().toString("yyyyMMdd") + ".dat";
+    QString backupDefaultName = "arrow-wallet-backup-" + QDateTime::currentDateTime().toString("yyyyMMdd") + ".dat";
 
     if (Settings::getInstance()->isTestnet()) {
         zcashdir.cd("testnet3");
@@ -931,7 +935,7 @@ void MainWindow::backupWalletDat() {
     QFile wallet(zcashdir.filePath("wallet.dat"));
     if (!wallet.exists()) {
         QMessageBox::critical(this, tr("No wallet.dat"), tr("Couldn't find the wallet.dat on this computer") + "\n" +
-            tr("You need to back it up from the machine zcashd is running on"), QMessageBox::Ok);
+            tr("You need to back it up from the machine arrowd is running on"), QMessageBox::Ok);
         return;
     }
     
@@ -979,7 +983,7 @@ void MainWindow::exportKeys(QString addr) {
     // Wire up save button
     QObject::connect(pui.buttonBox->button(QDialogButtonBox::Save), &QPushButton::clicked, [=] () {
         QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"),
-                           allKeys ? "zcash-all-privatekeys.txt" : "zcash-privatekey.txt");
+                           allKeys ? "arrow-all-privatekeys.txt" : "arrow-privatekey.txt");
         QFile file(fileName);
         if (!file.open(QIODevice::WriteOnly)) {
             QMessageBox::information(this, tr("Unable to open file"), file.errorString());
@@ -1117,7 +1121,7 @@ void MainWindow::setupBalancesTab() {
 }
 
 void MainWindow::setupZcashdTab() {    
-    ui->zcashdlogo->setBasePixmap(QPixmap(":/img/res/zcashdlogo.gif"));
+    ui->zcashdlogo->setBasePixmap(QPixmap(":/img/res/arrow-wallet-graphic.jpg"));
 }
 
 void MainWindow::setupTransactionsTab() {
@@ -1260,30 +1264,30 @@ std::function<void(bool)> MainWindow::addZAddrsToComboList(bool sapling) {
 }
 
 void MainWindow::setupRecieveTab() {
-    auto addNewTAddr = [=] () {
-        rpc->newTaddr([=] (json reply) {
-            QString addr = QString::fromStdString(reply.get<json::string_t>());
+//    auto addNewTAddr = [=] () {
+//        rpc->newTaddr([=] (json reply) {
+//            QString addr = QString::fromStdString(reply.get<json::string_t>());
 
-            // Just double make sure the t-address is still checked
-            if (ui->rdioTAddr->isChecked()) {
-                ui->listRecieveAddresses->insertItem(0, addr);
-                ui->listRecieveAddresses->setCurrentIndex(0);
+//            // Just double make sure the t-address is still checked
+//            if (ui->rdioTAddr->isChecked()) {
+//                ui->listRecieveAddresses->insertItem(0, addr);
+//                ui->listRecieveAddresses->setCurrentIndex(0);
 
-                ui->statusBar->showMessage(tr("Created new t-Addr"), 10 * 1000);
-            }
-        });
-    };
+//                ui->statusBar->showMessage(tr("Created new t-Addr"), 10 * 1000);
+//            }
+//        });
+//    };
 
     // Connect t-addr radio button
-    QObject::connect(ui->rdioTAddr, &QRadioButton::toggled, [=] (bool checked) { 
-        // DEPRECATED
-        // Whenever the t-address is selected, we generate a new address, because we don't
-        // want to reuse t-addrs
-        if (checked && this->rpc->getUTXOs() != nullptr) { 
-            updateTAddrCombo(checked);
-            //addNewTAddr();
-        } 
-    });
+//    QObject::connect(ui->rdioTAddr, &QRadioButton::toggled, [=] (bool checked) {
+//        // DEPRECATED
+//        // Whenever the t-address is selected, we generate a new address, because we don't
+//        // want to reuse t-addrs
+//        if (checked && this->rpc->getUTXOs() != nullptr) {
+//            updateTAddrCombo(checked);
+//            //addNewTAddr();
+//        }
+//    });
 
     QObject::connect(ui->rdioZSAddr, &QRadioButton::toggled, addZAddrsToComboList(true));
 
@@ -1292,11 +1296,7 @@ void MainWindow::setupRecieveTab() {
         if (!rpc->getConnection())
             return;
 
-        if (ui->rdioZSAddr->isChecked()) {
-            addNewZaddr(true);
-        } else if (ui->rdioTAddr->isChecked()) {
-            addNewTAddr();
-        }
+        addNewZaddr(true);
     });
 
     // Focus enter for the Receive Tab
@@ -1417,12 +1417,12 @@ void MainWindow::updateTAddrCombo(bool checked) {
 // Updates the labels everywhere on the UI. Call this after the labels have been updated
 void MainWindow::updateLabels() {
     // Update the Receive tab
-    if (ui->rdioTAddr->isChecked()) {
-        updateTAddrCombo(true);
-    }
-    else {
-        addZAddrsToComboList(ui->rdioZSAddr->isChecked())(true);
-    }
+//    if (ui->rdioTAddr->isChecked()) {
+//        updateTAddrCombo(true);
+//    }
+//    else {
+      addZAddrsToComboList(ui->rdioZSAddr->isChecked())(true);
+//    }
 
     // Update the Send Tab
     updateFromCombo();

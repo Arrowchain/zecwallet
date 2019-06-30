@@ -151,20 +151,20 @@ public:
         return instance;
     }
 
-    double getTBalance()     { return balTransparent;  }
+//    double getTBalance()     { return balTransparent;  }
     double getZBalance()     { return balShielded; }
     double getTotalBalance() { return balTotal; }
 
-    void   setBalances(double transparent, double shielded) {
-        balTransparent = transparent;
+    void   setBalances(double shielded) {
+//        balTransparent = transparent;
         balShielded = shielded;
-        balTotal = balTransparent + balShielded;
+        balTotal = balShielded;
     }
 
 private:
     AppDataModel() = default;   // Private, for singleton
 
-    double balTransparent;
+//    double balTransparent;
     double balShielded;
     double balTotal;
 

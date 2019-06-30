@@ -35,6 +35,7 @@ UI_DIR = src
 CONFIG += c++14
 
 SOURCES += \
+    src/debugdialog.cpp \
     src/main.cpp \
     src/mainwindow.cpp \
     src/rpc.cpp \
@@ -60,6 +61,7 @@ SOURCES += \
     src/memoedit.cpp
 
 HEADERS += \
+    src/debugdialog.h \
     src/mainwindow.h \
     src/precompiled.h \
     src/rpc.h \
@@ -85,6 +87,7 @@ HEADERS += \
     src/memoedit.h
 
 FORMS += \
+    src/debugdialog.ui \
     src/mainwindow.ui \
     src/migration.ui \
     src/recurringpayments.ui \

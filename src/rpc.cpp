@@ -78,7 +78,7 @@ void RPC::setEZcashd(QProcess* p) {
     ezcashd = p;
 
     if (ezcashd && ui->tabWidget->widget(4) == nullptr) {
-        ui->tabWidget->addTab(main->zcashdtab, "zcashd");
+        ui->tabWidget->addTab(main->zcashdtab, "arrowd");
     }
 }
 
@@ -91,7 +91,7 @@ void RPC::setConnection(Connection* c) {
 
     ui->statusBar->showMessage("Ready!");
 
-    // See if we need to remove the reindex/rescan flags from the zcash.conf file
+    // See if we need to remove the reindex/rescan flags from the arrow.conf file
     auto zcashConfLocation = Settings::getInstance()->getZcashdConfLocation();
     Settings::removeFromZcashConf(zcashConfLocation, "rescan");
     Settings::removeFromZcashConf(zcashConfLocation, "reindex");
@@ -105,16 +105,16 @@ void RPC::setConnection(Connection* c) {
     refresh(true);
 }
 
-void RPC::getTAddresses(const std::function<void(json)>& cb) {
-    json payload = {
-        {"jsonrpc", "1.0"},
-        {"id", "someid"},
-        {"method", "getaddressesbyaccount"},
-        {"params", {""}}
-    };
+//void RPC::getTAddresses(const std::function<void(json)>& cb) {
+//    json payload = {
+//        {"jsonrpc", "1.0"},
+//        {"id", "someid"},
+//        {"method", "getaddressesbyaccount"},
+//        {"params", {""}}
+//    };
 
-    conn->doRPCWithDefaultErrorHandling(payload, cb);
-}
+//    conn->doRPCWithDefaultErrorHandling(payload, cb);
+//}
 
 void RPC::getZAddresses(const std::function<void(json)>& cb) {
     json payload = {
@@ -248,6 +248,18 @@ void RPC::sendZTransaction(json params, const std::function<void(json)>& cb,
     conn->doRPC(payload, cb,  [=] (auto reply, auto parsed) {
         if (!parsed.is_discarded() && !parsed["error"]["message"].is_null()) {
             err(QString::fromStdString(parsed["error"]["message"]));    
+        } else {
+            err(reply->errorString());
+        }
+    });
+}
+
+void RPC::sendAnything(json payload, const std::function<void(json)>& cb,
+                       const std::function<void(QString)>& err) {
+
+    conn->doRPC(payload, cb, [=] (auto reply, auto parsed) {
+        if (!parsed.is_discarded() && !parsed["error"]["message"].is_null()) {
+            err(QString::fromStdString(parsed["error"]["message"]));
         } else {
             err(reply->errorString());
         }
@@ -397,11 +409,11 @@ void RPC::noConnection() {
 
     // Clear balances
     ui->balSheilded->setText("");
-    ui->balTransparent->setText("");
+//    ui->balTransparent->setText("");
     ui->balTotal->setText("");
 
     ui->balSheilded->setToolTip("");
-    ui->balTransparent->setToolTip("");
+//    ui->balTransparent->setToolTip("");
     ui->balTotal->setToolTip("");
 
     // Clear send tab from address
@@ -718,22 +730,22 @@ void RPC::refreshAddresses() {
 
     
     auto newtaddresses = new QList<QString>();
-    getTAddresses([=] (json reply) {
-        for (auto& it : reply.get<json::array_t>()) {   
-            auto addr = QString::fromStdString(it.get<json::string_t>());
-            if (Settings::isTAddress(addr))
-                newtaddresses->push_back(addr);
-        }
+//    getTAddresses([=] (json reply) {
+//        for (auto& it : reply.get<json::array_t>()) {
+//            auto addr = QString::fromStdString(it.get<json::string_t>());
+//            if (Settings::isTAddress(addr))
+//                newtaddresses->push_back(addr);
+//        }
 
-        delete taddresses;
-        taddresses = newtaddresses;
+//        delete taddresses;
+//        taddresses = newtaddresses;
 
-        // If there are no t Addresses, create one
-        newTaddr([=] (json reply) {
-            // What if taddress gets deleted before this executes?
-            taddresses->append(QString::fromStdString(reply.get<json::string_t>()));
-        });
-    });
+//        // If there are no t Addresses, create one
+//        newTaddr([=] (json reply) {
+//            // What if taddress gets deleted before this executes?
+//            taddresses->append(QString::fromStdString(reply.get<json::string_t>()));
+//        });
+//    });
 }
 
 // Function to create the data model and update the views, used below.
@@ -817,19 +829,19 @@ void RPC::refreshBalances() {
 
     // 1. Get the Balances
     getBalance([=] (json reply) {    
-        auto balT      = QString::fromStdString(reply["transparent"]).toDouble();
+//        auto balT      = QString::fromStdString(reply["transparent"]).toDouble();
         auto balZ      = QString::fromStdString(reply["private"]).toDouble();
         auto balTotal  = QString::fromStdString(reply["total"]).toDouble();
 
-        AppDataModel::getInstance()->setBalances(balT, balZ);
+        AppDataModel::getInstance()->setBalances(balZ);
 
         ui->balSheilded   ->setText(Settings::getZECDisplayFormat(balZ));
-        ui->balTransparent->setText(Settings::getZECDisplayFormat(balT));
+//        ui->balTransparent->setText(Settings::getZECDisplayFormat(balT));
         ui->balTotal      ->setText(Settings::getZECDisplayFormat(balTotal));
 
 
         ui->balSheilded   ->setToolTip(Settings::getZECDisplayFormat(balZ));
-        ui->balTransparent->setToolTip(Settings::getZECDisplayFormat(balT));
+//        ui->balTransparent->setToolTip(Settings::getZECDisplayFormat(balT));
         ui->balTotal      ->setToolTip(Settings::getZECDisplayFormat(balTotal));
     });
 
@@ -839,8 +851,8 @@ void RPC::refreshBalances() {
     auto newBalances = new QMap<QString, double>();
 
     // Call the Transparent and Z unspent APIs serially and then, once they're done, update the UI
-    getTransparentUnspent([=] (json reply) {
-        auto anyTUnconfirmed = processUnspent(reply, newBalances, newUtxos);
+//    getTransparentUnspent([=] (json reply) {
+//        auto anyTUnconfirmed = processUnspent(reply, newBalances, newUtxos);
 
         getZUnspent([=] (json reply) {
             auto anyZUnconfirmed = processUnspent(reply, newBalances, newUtxos);
@@ -852,11 +864,11 @@ void RPC::refreshBalances() {
             allBalances = newBalances;
             utxos       = newUtxos;
 
-            updateUI(anyTUnconfirmed || anyZUnconfirmed);
+            updateUI(anyZUnconfirmed);
 
             main->balancesReady();
         });        
-    });
+//    });
 }
 
 void RPC::refreshTransactions() {    
