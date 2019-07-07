@@ -148,7 +148,7 @@ public:
 
         // Command line parser
         QCommandLineParser parser;
-        parser.setApplicationDescription("Shielded desktop wallet and embedded full node for Zcash");
+        parser.setApplicationDescription("Shielded desktop wallet and embedded full node for Arrow");
         parser.addHelpOption();
 
         // A boolean option for running it headless
@@ -156,7 +156,7 @@ public:
         parser.addOption(headlessOption);
 
         // No embedded will disable the embedded zcashd node
-        QCommandLineOption noembeddedOption(QStringList() << "no-embedded", "Disable embedded zcashd");
+        QCommandLineOption noembeddedOption(QStringList() << "no-embedded", "Disable embedded arrowd");
         parser.addOption(noembeddedOption);
 
         // Add an option to specify the conf file
@@ -165,7 +165,7 @@ public:
         parser.addOption(confOption);
 
         // Positional argument will specify a zcash payment URI
-        parser.addPositionalArgument("zcashURI", "An optional zcash URI to pay");
+        parser.addPositionalArgument("zcashURI", "An optional arrow URI to pay");
 
         parser.process(a);
 
@@ -228,7 +228,8 @@ public:
         }
 
         w = new MainWindow();
-        w->setWindowTitle("ZecWallet v" + QString(APP_VERSION));
+        w->setWindowTitle("Quiver v" + QString(APP_VERSION));
+        w->setWindowTitle("Quiver - Arrow Wallet v0.1");
 
         // If there was a payment URI on the command line, pay it
         if (parser.positionalArguments().length() > 0) {

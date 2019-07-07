@@ -75,8 +75,8 @@ void ConnectionLoader::doAutoConnect(bool tryEzcashdStart) {
                     QString explanation;
                     if (config->zcashDaemon) {
                         explanation = QString() % QObject::tr("You have arrowd set to start as a daemon, which can cause problems "
-                            "with ZecWallet\n\n."
-                            "Please remove the following line from your zcash.conf and restart ZecWallet\n"
+                            "with ArrowWallet\n\n."
+                            "Please remove the following line from your arrow.conf and restart ArrowWallet\n"
                             "daemon=1");
                     } else {
                         explanation = QString() % QObject::tr("Couldn't start the embedded arrowd.\n\n"
@@ -182,15 +182,15 @@ void ConnectionLoader::createZcashConf() {
     QTextStream out(&file); 
     
     out << "server=1\n";
-    out << "addnode=52.90.76.26\n";
+//    out << "addnode=52.90.76.26\n";
     out << "rpcuser=zec-qt-wallet\n";
     out << "rpcpassword=" % randomPassword() << "\n";
-    out << "testnet=1\n";
+//    out << "testnet=1\n";
 
     // Fast sync override
-    if (ui.chkFastSync->isChecked()) {
-        out << "ibdskiptxverification=1\n";
-    }
+//    if (ui.chkFastSync->isChecked()) {
+//        out << "ibdskiptxverification=1\n";
+//    }
 
     // Datadir override 
     if (!datadir.isEmpty()) {
@@ -318,7 +318,7 @@ bool ConnectionLoader::startEmbeddedZcashd() {
     if (!Settings::getInstance()->useEmbedded()) 
         return false;
     
-    main->logger->write("Trying to start embedded zcashd");
+    main->logger->write("Trying to start embedded arrowd");
 
     // Static because it needs to survive even after this method returns.
     static QString processStdErrOutput;
@@ -326,7 +326,7 @@ bool ConnectionLoader::startEmbeddedZcashd() {
     if (ezcashd != nullptr) {
         if (ezcashd->state() == QProcess::NotRunning) {
             if (!processStdErrOutput.isEmpty()) {
-                QMessageBox::critical(main, QObject::tr("zcashd error"), "zcashd said: " + processStdErrOutput, 
+                QMessageBox::critical(main, QObject::tr("zcashd error"), "arrowd said: " + processStdErrOutput,
                                       QMessageBox::Ok);
             }
             return false;
@@ -482,7 +482,7 @@ void ConnectionLoader::refreshZcashdState(Connection* connection, std::function<
                         dots = 0;
                 }
                 this->showInformation(QObject::tr("Your arrowd is starting up. Please wait."), status);
-                main->logger->write("Waiting for zcashd to come online.");
+                main->logger->write("Waiting for arrowd to come online.");
                 // Refresh after one second
                 QTimer::singleShot(1000, [=]() { this->refreshZcashdState(connection, refused); });
             }
@@ -541,7 +541,7 @@ QString ConnectionLoader::zcashConfWritableLocation() {
     auto confLocation = QDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)).filePath("../../Arrow/arrow.conf");
 #endif
 
-    main->logger->write("Found zcashconf at " + QDir::cleanPath(confLocation));
+    main->logger->write("Found arrow.conf at " + QDir::cleanPath(confLocation));
     return QDir::cleanPath(confLocation);
 }
 

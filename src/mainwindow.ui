@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>ArrowWallet</string>
+   <string notr="true">Quiver</string>
   </property>
   <property name="windowIcon">
    <iconset resource="../application.qrc">
@@ -22,7 +22,7 @@
     <item row="0" column="0">
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>2</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
@@ -1036,13 +1036,14 @@
     <addaction name="actionShow_Debug"/>
    </widget>
    <widget class="QMenu" name="menuApps">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="title">
      <string>&amp;Apps</string>
     </property>
     <addaction name="actionConnect_Mobile_App"/>
     <addaction name="separator"/>
-    <addaction name="actionz_board_net"/>
-    <addaction name="actionTurnstile_Migration"/>
    </widget>
    <widget class="QMenu" name="menu_Edit">
     <property name="title">
@@ -1082,16 +1083,11 @@
    </property>
   </action>
   <action name="actionCheck_for_Updates">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Check github.com for &amp;updates</string>
-   </property>
-  </action>
-  <action name="actionTurnstile_Migration">
-   <property name="text">
-    <string>Sapling &amp;turnstile</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+A, Ctrl+T</string>
    </property>
   </action>
   <action name="actionImport_Private_Key">
@@ -1102,14 +1098,6 @@
   <action name="actionExport_All_Private_Keys">
    <property name="text">
     <string>&amp;Export all private keys</string>
-   </property>
-  </action>
-  <action name="actionz_board_net">
-   <property name="text">
-    <string>&amp;z-board.net</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+A, Ctrl+Z</string>
    </property>
   </action>
   <action name="action_Address_Book">
@@ -1132,10 +1120,13 @@
   </action>
   <action name="actionPay_URI">
    <property name="text">
-    <string>Pay zcash &amp;URI...</string>
+    <string>Pay Arrow &amp;URI...</string>
    </property>
   </action>
   <action name="actionConnect_Mobile_App">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>Connect mobile &amp;app</string>
    </property>
@@ -1150,7 +1141,7 @@
   </action>
   <action name="actionRequest_zcash">
    <property name="text">
-    <string>Request zcash...</string>
+    <string>Request Arrow...</string>
    </property>
   </action>
   <action name="actionShow_Debug">

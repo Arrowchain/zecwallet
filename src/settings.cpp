@@ -220,23 +220,17 @@ const QString Settings::txidStatusMessage = QString(QObject::tr("Tx submitted (r
 
 QString Settings::getTokenName() {
     if (Settings::getInstance()->isTestnet()) {
-        return "TAZ";
+        return "TAR";
     } else {
-        return "ZEC";
+        return "ARW";
     }
 }
 
 QString Settings::getDonationAddr(bool sapling) {
     if (Settings::getInstance()->isTestnet()) 
-        if (sapling)
-            return "ztestsapling1wn6889vznyu42wzmkakl2effhllhpe4azhu696edg2x6me4kfsnmqwpglaxzs7tmqsq7kudemp5";
-        else
-            return "ztn6fYKBii4Fp4vbGhkPgrtLU4XjXp4ZBMZgShtopmDGbn1L2JLTYbBp2b7SSkNr9F3rQeNZ9idmoR7s4JCVUZ7iiM5byhF";
+        return "ztestsapling14xxl4n887ehwxcrta293v3zvzsq0fzq3vwqxdze7lhzj5kw2afc86279tflvjqx38alj2vlk46g";
     else 
-        if (sapling)
-            return "zs1gv64eu0v2wx7raxqxlmj354y9ycznwaau9kduljzczxztvs4qcl00kn2sjxtejvrxnkucw5xx9u";
-        else
-            return "zcEgrceTwvoiFdEvPWcsJHAMrpLsprMF6aRJiQa3fan5ZphyXLPuHghnEPrEPRoEVzUy65GnMVyCTRdkT6BYBepnXh6NBYs";    
+        return "as1phfksxeg6uxr2uecf4gjqcnqnwnjxmad7xz5hwkg0c3fkpdf27lmsmj8x27gdaveq0zjwm7h8xa";
 }
 
 bool Settings::addToZcashConf(QString confLocation, QString line) {
@@ -323,12 +317,12 @@ QString Settings::paymentURIPretty(PaymentURI uri) {
 PaymentURI Settings::parseURI(QString uri) {
     PaymentURI ans;
 
-    if (!uri.startsWith("zcash:")) {
+    if (!uri.startsWith("arrow:")) {
         ans.error = "Not a zcash payment URI";
         return ans;
     }
 
-    uri = uri.right(uri.length() - QString("zcash:").length());
+    uri = uri.right(uri.length() - QString("arrow:").length());
     
     QRegExp re("([a-zA-Z0-9]+)");
     int pos;

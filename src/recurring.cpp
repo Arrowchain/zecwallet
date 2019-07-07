@@ -459,20 +459,20 @@ void Recurring::processMultiplePending(RecurringPaymentInfo rpi, MainWindow* mai
 }
 
 void Recurring::executeRecurringPayment(MainWindow* main, RecurringPaymentInfo rpi, QList<int> paymentNumbers) {
-    // Amount is in USD or ZEC?
+    // Amount is in USD or ARW?
     auto amt = rpi.amt;
     if (rpi.currency == "USD") {
         // If there is no price, then fail the payment
         if (Settings::getInstance()->getZECPrice() == 0) {
             for (auto paymentNumber: paymentNumbers) {
                 updatePaymentItem(rpi.getHash(), paymentNumber, 
-                    "", QObject::tr("No ZEC price was available to convert from USD"),
+                    "", QObject::tr("No ARW price was available to convert from USD"),
                     PaymentStatus::ERROR);
             }
             return;
         }
         
-        // Translate it into ZEC
+        // Translate it into ARW
         amt = rpi.amt / Settings::getInstance()->getZECPrice();
     }
 

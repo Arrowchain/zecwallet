@@ -78,7 +78,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->actionExport_transactions, &QAction::triggered, this, &MainWindow::exportTransactions);
 
     // z-Board.net
-    QObject::connect(ui->actionz_board_net, &QAction::triggered, this, &MainWindow::postToZBoard);
+//    QObject::connect(ui->actionz_board_net, &QAction::triggered, this, &MainWindow::postToZBoard);
 
     // Connect mobile app
     QObject::connect(ui->actionConnect_Mobile_App, &QAction::triggered, this, [=] () {
@@ -386,21 +386,21 @@ void MainWindow::turnstileDoMigration(QString fromAddr) {
 
 void MainWindow::setupTurnstileDialog() {        
     // Turnstile migration
-    QObject::connect(ui->actionTurnstile_Migration, &QAction::triggered, [=] () {
-        // If the underlying zcashd has support for the migration and there is no existing migration
-        // in progress, use that.         
-        if (rpc->getMigrationStatus()->available && !rpc->getTurnstile()->isMigrationPresent()) {
-            Turnstile::showZcashdMigration(this);
-        } else {
-            // Else, show the ZecWallet turnstile tool
+//    QObject::connect(ui->actionTurnstile_Migration, &QAction::triggered, [=] () {
+//        // If the underlying zcashd has support for the migration and there is no existing migration
+//        // in progress, use that.
+//        if (rpc->getMigrationStatus()->available && !rpc->getTurnstile()->isMigrationPresent()) {
+//            Turnstile::showZcashdMigration(this);
+//        } else {
+//            // Else, show the ZecWallet turnstile tool
 
-            // If there is current migration that is present, show the progress button
-            if (rpc->getTurnstile()->isMigrationPresent())
-                turnstileProgress();
-            else    
-                turnstileDoMigration();        
-        }
-    });
+//            // If there is current migration that is present, show the progress button
+//            if (rpc->getTurnstile()->isMigrationPresent())
+//                turnstileProgress();
+//            else
+//                turnstileDoMigration();
+//        }
+//    });
 
 }
 
@@ -527,10 +527,10 @@ void MainWindow::setupSettingsModal() {
         // Enable the troubleshooting options only if using embedded arrowd
         if (!rpc->isEmbedded()) {
             settings.chkRescan->setEnabled(false);
-            settings.chkRescan->setToolTip(tr("You're using an external zcashd. Please restart arrowd with -rescan"));
+            settings.chkRescan->setToolTip(tr("You're using an external arrowd. Please restart arrowd with -rescan"));
 
             settings.chkReindex->setEnabled(false);
-            settings.chkReindex->setToolTip(tr("You're using an external zcashd. Please restart arrowd with -reindex"));
+            settings.chkReindex->setToolTip(tr("You're using an external arrowd. Please restart arrowd with -reindex"));
         }
 
         if (settingsDialog.exec() == QDialog::Accepted) {
@@ -589,7 +589,7 @@ void MainWindow::setupSettingsModal() {
             }
 
             if (showRestartInfo) {
-                auto desc = tr("ZecWallet needs to restart to rescan/reindex. ArrowWallet will now close, please restart ArrowWallet to continue");
+                auto desc = tr("ArrowWallet needs to restart to rescan/reindex. ArrowWallet will now close, please restart ArrowWallet to continue");
                 
                 QMessageBox::information(this, tr("Restart ArrowWallet"), desc, QMessageBox::Ok);
                 QTimer::singleShot(1, [=]() { this->close(); });
@@ -785,7 +785,7 @@ void MainWindow::balancesReady() {
     // There is a pending URI payment (from the command line, or from a secondary instance),
     // process it.
     if (!pendingURIPayment.isEmpty()) {
-        qDebug() << "Paying zcash URI";
+        qDebug() << "Paying arrow URI";
         payZcashURI(pendingURIPayment);
         pendingURIPayment = "";
     }
@@ -834,7 +834,7 @@ void MainWindow::payZcashURI(QString uri, QString myAddr) {
     PaymentURI paymentInfo = Settings::parseURI(uri);
     if (!paymentInfo.error.isEmpty()) {
         QMessageBox::critical(this, tr("Error paying arrow URI"),
-                tr("URI should be of the form 'zcash:<addr>?amt=x&memo=y") + "\n" + paymentInfo.error);
+                tr("URI should be of the form 'arrow:<addr>?amt=x&memo=y") + "\n" + paymentInfo.error);
         return;
     }
 

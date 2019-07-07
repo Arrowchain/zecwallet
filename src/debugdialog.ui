@@ -33,9 +33,9 @@
    <property name="geometry">
     <rect>
      <x>30</x>
-     <y>20</y>
+     <y>50</y>
      <width>611</width>
-     <height>341</height>
+     <height>311</height>
     </rect>
    </property>
   </widget>
@@ -60,6 +60,22 @@
      <width>611</width>
      <height>41</height>
     </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>10</y>
+     <width>611</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>WARNING: in development; may cause your arrowd node to crash if you type something incorrectly.</string>
+   </property>
+   <property name="textFormat">
+    <enum>Qt::PlainText</enum>
    </property>
   </widget>
  </widget>

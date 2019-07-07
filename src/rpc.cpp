@@ -677,10 +677,10 @@ void RPC::getInfoThenRefresh(bool force) {
             auto zecPrice = Settings::getInstance()->getUSDFromZecAmount(1);
             QString tooltip;
             if (connections > 0) {
-                tooltip = QObject::tr("Connected to zcashd");
+                tooltip = QObject::tr("Connected to arrowd");
             }
             else {
-                tooltip = QObject::tr("zcashd has no peer connections");
+                tooltip = QObject::tr("arrowd has no peer connections");
             }
             tooltip = tooltip % "(v " % QString::number(Settings::getInstance()->getZcashdVersion()) % ")";
 
@@ -699,7 +699,7 @@ void RPC::getInfoThenRefresh(bool force) {
         static bool shown = false;
         if (!shown && prevCallSucceeded) { // show error only first time
             shown = true;
-            QMessageBox::critical(main, QObject::tr("Connection Error"), QObject::tr("There was an error connecting to zcashd. The error was") + ": \n\n"
+            QMessageBox::critical(main, QObject::tr("Connection Error"), QObject::tr("There was an error connecting to arrowd. The error was") + ": \n\n"
                 + reply->errorString(), QMessageBox::StandardButton::Ok);
             shown = false;
         }
@@ -1051,7 +1051,7 @@ void RPC::checkForUpdate(bool silent) {
     if  (conn == nullptr) 
         return noConnection();
 
-    QUrl cmcURL("https://api.github.com/repos/ZcashFoundation/zecwallet/releases");
+    QUrl cmcURL("https://api.github.com/repos/Arrow/arrowwallet/releases");
 
     QNetworkRequest req;
     req.setUrl(cmcURL);
@@ -1097,7 +1097,7 @@ void RPC::checkForUpdate(bool silent) {
                             .arg(currentVersion.toString()),
                         QMessageBox::Yes, QMessageBox::Cancel);
                     if (ans == QMessageBox::Yes) {
-                        QDesktopServices::openUrl(QUrl("https://github.com/ZcashFoundation/zecwallet/releases"));
+                        QDesktopServices::openUrl(QUrl("https://github.com/Arrow/arrowwallet/releases"));
                     } else {
                         // If the user selects cancel, don't bother them again for this version
                         s.setValue("update/lastversion", maxVersion.toString());
@@ -1173,7 +1173,7 @@ void RPC::refreshZECPrice() {
 }
 
 void RPC::shutdownZcashd() {
-    // Shutdown embedded zcashd if it was started
+    // Shutdown embedded arrowd if it was started
     if (ezcashd == nullptr || ezcashd->processId() == 0 || conn == nullptr) {
         // No zcashd running internally, just return
         return;
@@ -1192,8 +1192,8 @@ void RPC::shutdownZcashd() {
     Ui_ConnectionDialog connD;
     connD.setupUi(&d);
     connD.topIcon->setBasePixmap(QIcon(":/icons/res/icon.ico").pixmap(256, 256));
-    connD.status->setText(QObject::tr("Please wait for ZecWallet to exit"));
-    connD.statusDetail->setText(QObject::tr("Waiting for zcashd to exit"));
+    connD.status->setText(QObject::tr("Please wait for ArrowWallet to exit"));
+    connD.statusDetail->setText(QObject::tr("Waiting for arrowd to exit"));
 
     QTimer waiter(main);
 
