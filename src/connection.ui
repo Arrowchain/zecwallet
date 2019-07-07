@@ -40,8 +40,20 @@
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
+     <property name="lineWidth">
+      <number>0</number>
+     </property>
      <property name="text">
       <string notr="true"/>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+     </property>
+     <property name="margin">
+      <number>0</number>
+     </property>
+     <property name="indent">
+      <number>0</number>
      </property>
     </widget>
    </item>
