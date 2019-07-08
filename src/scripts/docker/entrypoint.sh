@@ -1,3 +1,3 @@
 #!/bin/bash
 
-cp /release/zecwallet.exe /arrow-release
+cp /release/quiver.exe /arrow-release
