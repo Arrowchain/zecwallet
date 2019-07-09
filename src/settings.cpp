@@ -298,10 +298,10 @@ QString Settings::getZboardAddr() {
 }
 
 bool Settings::isValidAddress(QString addr) {
-    QRegExp zcexp("^z[a-z0-9]{94}$",  Qt::CaseInsensitive);
-    QRegExp zsexp("^z[a-z0-9]{77}$",  Qt::CaseInsensitive);
+    QRegExp zcexp("^a[a-z0-9]{94}$",  Qt::CaseInsensitive);
+    QRegExp zsexp("^a[a-z0-9]{77}$",  Qt::CaseInsensitive);
     QRegExp ztsexp("^ztestsapling[a-z0-9]{76}", Qt::CaseInsensitive);
-    QRegExp texp("^t[a-z0-9]{34}$", Qt::CaseInsensitive);
+    QRegExp texp("^a[a-z0-9]{34}$", Qt::CaseInsensitive);
 
     return  zcexp.exactMatch(addr)  || texp.exactMatch(addr) || 
             ztsexp.exactMatch(addr) || zsexp.exactMatch(addr);
@@ -318,7 +318,7 @@ PaymentURI Settings::parseURI(QString uri) {
     PaymentURI ans;
 
     if (!uri.startsWith("arrow:")) {
-        ans.error = "Not a zcash payment URI";
+        ans.error = "Not a arrow payment URI";
         return ans;
     }
 
