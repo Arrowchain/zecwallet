@@ -717,6 +717,7 @@ void RPC::refreshAddresses() {
     getZAddresses([=] (json reply) {
         for (auto& it : reply.get<json::array_t>()) {   
             auto addr = QString::fromStdString(it.get<json::string_t>());
+            qDebug() << addr;
             newzaddresses->push_back(addr);
         }
 

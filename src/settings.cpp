@@ -226,12 +226,12 @@ QString Settings::getTokenName() {
     }
 }
 
-QString Settings::getDonationAddr(bool sapling) {
-    if (Settings::getInstance()->isTestnet()) 
-        return "ztestsapling14xxl4n887ehwxcrta293v3zvzsq0fzq3vwqxdze7lhzj5kw2afc86279tflvjqx38alj2vlk46g";
-    else 
-        return "as1phfksxeg6uxr2uecf4gjqcnqnwnjxmad7xz5hwkg0c3fkpdf27lmsmj8x27gdaveq0zjwm7h8xa";
-}
+//QString Settings::getDonationAddr(bool sapling) {
+//    if (Settings::getInstance()->isTestnet())
+//        return "ztestsapling14xxl4n887ehwxcrta293v3zvzsq0fzq3vwqxdze7lhzj5kw2afc86279tflvjqx38alj2vlk46g";
+//    else
+//        return "as1phfksxeg6uxr2uecf4gjqcnqnwnjxmad7xz5hwkg0c3fkpdf27lmsmj8x27gdaveq0zjwm7h8xa";
+//}
 
 bool Settings::addToZcashConf(QString confLocation, QString line) {
     QFile file(confLocation);
@@ -289,12 +289,12 @@ double Settings::getZboardAmount() {
 }
 
 QString Settings::getZboardAddr() {
-    if (Settings::getInstance()->isTestnet()) {
-        return getDonationAddr(true);
-    }
-    else {
-        return "zs10m00rvkhfm4f7n23e4sxsx275r7ptnggx39ygl0vy46j9mdll5c97gl6dxgpk0njuptg2mn9w5s";
-    }
+//    if (Settings::getInstance()->isTestnet()) {
+//        return getDonationAddr(true);
+//    }
+//    else {
+//        return "zs10m00rvkhfm4f7n23e4sxsx275r7ptnggx39ygl0vy46j9mdll5c97gl6dxgpk0njuptg2mn9w5s";
+//    }
 }
 
 bool Settings::isValidAddress(QString addr) {

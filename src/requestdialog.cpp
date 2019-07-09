@@ -39,7 +39,7 @@ void RequestDialog::setupDialog(MainWindow* main, QDialog* d, Ui_RequestDialog* 
     }
     req->cmbMyAddress->setCurrentText(main->getRPC()->getDefaultSaplingAddress());
 
-    QIcon icon(":/icons/res/paymentreq.gif");
+    QIcon icon(":/img/res/logobig.gif");
     req->lblPixmap->setPixmap(icon.pixmap(48, 48));
 }
 

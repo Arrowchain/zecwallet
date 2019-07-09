@@ -61,7 +61,7 @@ ENV CC_x86_64_pc_windows_gnu="x86_64-w64-mingw32.static-gcc"
 ENV CC_aarch64_unknown_linux_gnu="aarch64-linux-gnu-gcc"
 ENV PATH="/opt/mxe/usr/bin:${PATH}"
 
-RUN echo 1
+RUN echo 2
 
 RUN git clone https://github.com/Arrowchain/arrowwallet.git
 WORKDIR arrowwallet
@@ -85,6 +85,7 @@ RUN ls release
 FROM ubuntu:xenial
 
 COPY --from=deps /arrowwallet/release/* /release/
+RUN ls -lah /release
 
 RUN mkdir /arrow-release
 

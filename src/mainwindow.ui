@@ -22,7 +22,7 @@
     <item row="0" column="0">
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>4</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
@@ -665,15 +665,7 @@
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_9">
              <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_9">
-               <item>
-                <widget class="QRadioButton" name="rdioZSAddr">
-                 <property name="text">
-                  <string>private address</string>
-                 </property>
-                </widget>
-               </item>
-              </layout>
+              <layout class="QHBoxLayout" name="horizontalLayout_9"/>
              </item>
              <item>
               <layout class="QHBoxLayout" name="horizontalLayout_10">
@@ -1153,6 +1145,11 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
+   <class>FilledIconLabel</class>
+   <extends>QLabel</extends>
+   <header>fillediconlabel.h</header>
+  </customwidget>
+  <customwidget>
    <class>AddressCombo</class>
    <extends>QComboBox</extends>
    <header>addresscombo.h</header>
@@ -1161,11 +1158,6 @@
    <class>QRCodeLabel</class>
    <extends>QLabel</extends>
    <header>qrcodelabel.h</header>
-  </customwidget>
-  <customwidget>
-   <class>FilledIconLabel</class>
-   <extends>QLabel</extends>
-   <header>fillediconlabel.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
@@ -1179,7 +1171,6 @@
   <tabstop>addAddressButton</tabstop>
   <tabstop>sendTransactionButton</tabstop>
   <tabstop>cancelSendButton</tabstop>
-  <tabstop>rdioZSAddr</tabstop>
   <tabstop>listRecieveAddresses</tabstop>
   <tabstop>btnRecieveNewAddr</tabstop>
   <tabstop>txtRecieve</tabstop>

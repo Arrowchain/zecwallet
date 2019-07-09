@@ -99,7 +99,7 @@ MainWindow::MainWindow(QWidget *parent) :
         Settings::saveRestore(&aboutDialog);
 
         QString version    = QString("Version ") % QString(APP_VERSION) % " (" % QString(__DATE__) % ")";
-        about.versionLabel->setText(version);
+        about.versionLabel->setText("0.1.1");
         
         aboutDialog.exec();
     });
@@ -614,19 +614,19 @@ void MainWindow::addressBook() {
 
 
 void MainWindow::donate() {
-    // Set up a donation to me :)
-    clearSendForm();
+//    // Set up a donation to me :)
+//    clearSendForm();
 
-    ui->Address1->setText(Settings::getDonationAddr(
-                            Settings::getInstance()->isSaplingAddress(ui->inputsCombo->currentText())));
-    ui->Address1->setCursorPosition(0);
-    ui->Amount1->setText("0.01");
-    ui->MemoTxt1->setText(tr("Thanks for supporting ArrowWallet!"));
+//    ui->Address1->setText(Settings::getDonationAddr(
+//                            Settings::getInstance()->isSaplingAddress(ui->inputsCombo->currentText())));
+//    ui->Address1->setCursorPosition(0);
+//    ui->Amount1->setText("0.01");
+//    ui->MemoTxt1->setText(tr("Thanks for supporting ArrowWallet!"));
 
-    ui->statusBar->showMessage(tr("Donate 0.01 ") % Settings::getTokenName() % tr(" to support ArrowWallet"));
+//    ui->statusBar->showMessage(tr("Donate 0.01 ") % Settings::getTokenName() % tr(" to support ArrowWallet"));
 
-    // And switch to the send tab.
-    ui->tabWidget->setCurrentIndex(1);
+//    // And switch to the send tab.
+//    ui->tabWidget->setCurrentIndex(1);
 }
 
 
@@ -648,15 +648,15 @@ void MainWindow::postToZBoard() {
 
     QMap<QString, QString> topics;
     // Insert the main topic automatically
-    topics.insert("#Main_Area", Settings::getInstance()->isTestnet() ? Settings::getDonationAddr(true) : Settings::getZboardAddr());
+//    topics.insert("#Main_Area", Settings::getInstance()->isTestnet() ? Settings::getDonationAddr(true) : Settings::getZboardAddr());
     zb.topicsList->addItem(topics.firstKey());
     // Then call the API to get topics, and if it returns successfully, then add the rest of the topics
-    rpc->getZboardTopics([&](QMap<QString, QString> topicsMap) {
-        for (auto t : topicsMap.keys()) {
-            topics.insert(t, Settings::getInstance()->isTestnet() ? Settings::getDonationAddr(true) : topicsMap[t]);
-            zb.topicsList->addItem(t);
-        }
-    });
+//    rpc->getZboardTopics([&](QMap<QString, QString> topicsMap) {
+//        for (auto t : topicsMap.keys()) {
+//            topics.insert(t, Settings::getInstance()->isTestnet() ? Settings::getDonationAddr(true) : topicsMap[t]);
+//            zb.topicsList->addItem(t);
+//        }
+//    });
 
     // Testnet warning
     if (Settings::getInstance()->isTestnet()) {
@@ -822,7 +822,7 @@ void MainWindow::payZcashURI(QString uri, QString myAddr) {
     // If there was no URI passed, ask the user for one.
     if (uri.isEmpty()) {
         uri = QInputDialog::getText(this, tr("Paste Arrow URI"),
-            "Zcash URI" + QString(" ").repeated(180));
+            "Arrow URI" + QString(" ").repeated(180));
     }
 
     // If there's no URI, just exit
@@ -870,8 +870,8 @@ void MainWindow::importPrivKey() {
 
     pui.buttonBox->button(QDialogButtonBox::Save)->setVisible(false);
     pui.helpLbl->setText(QString() %
-                        tr("Please paste your private keys (z-Addr only) here, one per line") % ".\n" %
-                        tr("The keys will be imported into your connected zcashd node"));  
+                        tr("Please paste your private keys (as-Addr only) here, one per line") % ".\n" %
+                        tr("The keys will be imported into your connected arrowd node"));
 
     if (d.exec() == QDialog::Accepted && !pui.privKeyTxt->toPlainText().trimmed().isEmpty()) {
         auto rawkeys = pui.privKeyTxt->toPlainText().trimmed().split("\n");
@@ -928,7 +928,7 @@ void MainWindow::backupWalletDat() {
     QString backupDefaultName = "arrow-wallet-backup-" + QDateTime::currentDateTime().toString("yyyyMMdd") + ".dat";
 
     if (Settings::getInstance()->isTestnet()) {
-        zcashdir.cd("testnet3");
+        zcashdir.cd("testnet");
         backupDefaultName = "testnet-" + backupDefaultName;
     }
     
@@ -1217,53 +1217,47 @@ void MainWindow::setupTransactionsTab() {
     });
 }
 
-void MainWindow::addNewZaddr(bool sapling) {
+void MainWindow::addNewZaddr() {
 
-    rpc->newZaddr(sapling, [=] (json reply) {
+    rpc->newZaddr(true, [=] (json reply) {
         QString addr = QString::fromStdString(reply.get<json::string_t>());
         // Make sure the RPC class reloads the z-addrs for future use
         rpc->refreshAddresses();
 
         // Just double make sure the z-address is still checked
-        if ( sapling && ui->rdioZSAddr->isChecked() ) {
-            ui->listRecieveAddresses->insertItem(0, addr); 
-            ui->listRecieveAddresses->setCurrentIndex(0);
+        ui->listRecieveAddresses->insertItem(0, addr);
+        ui->listRecieveAddresses->setCurrentIndex(0);
 
-            ui->statusBar->showMessage(QString::fromStdString("Created new zAddr") %
-                                       (sapling ? "(Sapling)" : "(Sprout)"), 
-                                       10 * 1000);
-        }
+        ui->statusBar->showMessage(QString::fromStdString("Created new zAddr") %
+                                   "(Sapling)",
+                                   10 * 1000);
     });
 }
 
 
 // Adds sapling or sprout z-addresses to the combo box. Technically, returns a
 // lambda, which can be connected to the appropriate signal
-std::function<void(bool)> MainWindow::addZAddrsToComboList(bool sapling) {
-    return [=] (bool checked) { 
-        if (checked && this->rpc->getAllZAddresses() != nullptr) { 
-            auto addrs = this->rpc->getAllZAddresses();
-            ui->listRecieveAddresses->clear();
+void MainWindow::addZAddrsToComboList() {
+    if (this->rpc->getAllZAddresses() != nullptr) {
+        auto addrs = this->rpc->getAllZAddresses();
+        ui->listRecieveAddresses->clear();
 
-            std::for_each(addrs->begin(), addrs->end(), [=] (auto addr) {
-                if ( (sapling &&  Settings::getInstance()->isSaplingAddress(addr)) ||
-                    (!sapling && !Settings::getInstance()->isSaplingAddress(addr))) {
-                        if (rpc->getAllBalances()) {
-                            auto bal = rpc->getAllBalances()->value(addr);
-                            ui->listRecieveAddresses->addItem(addr, bal);
-                        }
-                }
-            }); 
-
-            // If z-addrs are empty, then create a new one.
-            if (addrs->isEmpty()) {
-                addNewZaddr(sapling);
+        std::for_each(addrs->begin(), addrs->end(), [=] (auto addr) {
+            if (rpc->getAllBalances()) {
+                auto bal = rpc->getAllBalances()->value(addr);
+                ui->listRecieveAddresses->addItem(addr, bal);
             }
-        } 
-    };
+        });
+
+        // If z-addrs are empty, then create a new one.
+        if (addrs->isEmpty()) {
+            addNewZaddr();
+        }
+    }
 }
 
 void MainWindow::setupRecieveTab() {
+//    rpc->refreshAddresses();
 //    auto addNewTAddr = [=] () {
 //        rpc->newTaddr([=] (json reply) {
 //            QString addr = QString::fromStdString(reply.get<json::string_t>());
@@ -1289,21 +1283,22 @@ void MainWindow::setupRecieveTab() {
 //        }
 //    });
 
-    QObject::connect(ui->rdioZSAddr, &QRadioButton::toggled, addZAddrsToComboList(true));
+//    QObject::connect(ui->rdioZSAddr, &QRadioButton::toggled, addZAddrsToComboList(true));
 
     // Explicitly get new address button.
     QObject::connect(ui->btnRecieveNewAddr, &QPushButton::clicked, [=] () {
         if (!rpc->getConnection())
             return;
 
-        addNewZaddr(true);
+        addNewZaddr();
     });
 
     // Focus enter for the Receive Tab
     QObject::connect(ui->tabWidget, &QTabWidget::currentChanged, [=] (int tab) {
         if (tab == 2) {
+            addZAddrsToComboList();
             // Switched to receive tab, select the z-addr radio button
-            ui->rdioZSAddr->setChecked(true);
+//            ui->rdioZSAddr->setChecked(true);
             
             // And then select the first one
             ui->listRecieveAddresses->setCurrentIndex(0);
@@ -1418,10 +1413,10 @@ void MainWindow::updateTAddrCombo(bool checked) {
 void MainWindow::updateLabels() {
     // Update the Receive tab
 //    if (ui->rdioTAddr->isChecked()) {
-//        updateTAddrCombo(true);
+//        updateTAddrCombo(false);
 //    }
 //    else {
-      addZAddrsToComboList(ui->rdioZSAddr->isChecked())(true);
+    addZAddrsToComboList();
 //    }
 
     // Update the Send Tab
