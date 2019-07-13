@@ -228,8 +228,7 @@ public:
         }
 
         w = new MainWindow();
-        w->setWindowTitle("Quiver v" + QString(APP_VERSION));
-        w->setWindowTitle("Quiver - Arrow Wallet v0.1");
+        w->setWindowTitle("Quiver - Arrow Wallet v" + QString(APP_VERSION));
 
         // If there was a payment URI on the command line, pay it
         if (parser.positionalArguments().length() > 0) {
