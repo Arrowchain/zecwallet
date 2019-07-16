@@ -89,6 +89,9 @@ public:
     void shutdownZcashd();
     void noConnection();
     bool isEmbedded() { return ezcashd != nullptr; }
+    void getBalanceScriptAddress(QString addr);
+    void getAddressesForExport();
+    void getScriptAddressesAndBalances();
 
     QString getDefaultSaplingAddress();
     QString getDefaultTAddress();

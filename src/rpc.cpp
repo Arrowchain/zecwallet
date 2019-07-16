@@ -6,6 +6,7 @@
 #include "turnstile.h"
 #include "version.h"
 #include "websockets.h"
+#include <typeinfo>
 
 using json = nlohmann::json;
 
@@ -266,6 +267,36 @@ void RPC::sendAnything(json payload, const std::function<void(json)>& cb,
     });
 }
 
+QMap<QString, double> extractAddrsFromListAddrGroups(const json& response, bool scripts) {
+    QMap<QString, double> balancesMap;
+    for (auto& groups : response.get<json::array_t>()) {
+        // each group is publicly associated in one or more transactions
+        for (auto& group : groups.get<json::array_t>()) {
+            int index = 0;
+            QString addr;
+            double balance = 0.0;
+            for (auto& item : group.get<json::array_t>()) {
+                if (index == 0) {
+                    // address
+                    addr = QString::fromStdString(item);
+                }
+                if (index == 1) {
+                    // amount
+                    balance = item;
+                }
+                index++;
+            }
+            index = 0;
+            if (scripts && addr.startsWith("aw")) {
+                balancesMap[addr] = balance;
+            } else if (!scripts && addr.startsWith("ar")) {
+                balancesMap[addr] = balance;
+            }
+        }
+    }
+    return balancesMap;
+}
+
 /**
  * Method to get all the private keys for both z and t addresses. It will make 2 batch calls,
  * combine the result, and call the callback with a single list containing both the t-addr and z-addr
@@ -300,38 +331,51 @@ void RPC::getAllPrivKeys(const std::function<void(QList<QPair<QString, QString>>
     };
 
     // A utility fn to do the batch calling
-    auto fnDoBatchGetPrivKeys = [=](json getAddressPayload, std::string privKeyDumpMethodName) {
+    auto fnDoBatchGetPrivKeys = [=](json getAddressPayload, std::string privKeyDumpMethodName, bool listAddressGroupings) {
         conn->doRPCWithDefaultErrorHandling(getAddressPayload, [=] (json resp) {
             QList<QString> addrs;
-            for (auto addr : resp.get<json::array_t>()) {   
-                addrs.push_back(QString::fromStdString(addr.get<json::string_t>()));
+            if (listAddressGroupings) {
+                // false (at the end) says only return regular addresses, no script addresses
+                QMap<QString, double> addrsMap = extractAddrsFromListAddrGroups(resp, false);
+                addrs = addrsMap.keys();
+            } else {
+                for (auto addr : resp.get<json::array_t>()) {
+                    addrs.push_back(QString::fromStdString(addr.get<json::string_t>()));
+                }
             }
 
-            // Then, do a batch request to get all the private keys
-            conn->doBatchRPC<QString>(
-                addrs, 
-                [=] (auto addr) {
-                    json payload = {
-                        {"jsonrpc", "1.0"},
-                        {"id", "someid"},
-                        {"method", privKeyDumpMethodName},
-                        {"params", { addr.toStdString() }},
-                    };
-                    return payload;
-                },
-                [=] (QMap<QString, json>* privkeys) {
-                    QList<QPair<QString, QString>> allTKeys;
-                    for (QString addr: privkeys->keys()) {
-                        allTKeys.push_back(
-                            QPair<QString, QString>(
-                                addr, 
-                                QString::fromStdString(privkeys->value(addr).get<json::string_t>())));
-                    }
 
-                    fnCombineTwoLists(allTKeys);
-                    delete privkeys;
-                }
-            );
+            // Then, do a batch request to get all the private keys
+            if (addrs.size() > 0) {
+                conn->doBatchRPC<QString>(
+                    addrs,
+                    [=] (auto addr) {
+                        json payload = {
+                            {"jsonrpc", "1.0"},
+                            {"id", "someid"},
+                            {"method", privKeyDumpMethodName},
+                            {"params", { addr.toStdString() }},
+                        };
+                        return payload;
+                    },
+                    [=] (QMap<QString, json>* privkeys) {
+                        QList<QPair<QString, QString>> allTKeys;
+                        for (QString addr: privkeys->keys()) {
+                            allTKeys.push_back(
+                                QPair<QString, QString>(
+                                    addr,
+                                    QString::fromStdString(privkeys->value(addr).get<json::string_t>())));
+                        }
+
+                        fnCombineTwoLists(allTKeys);
+                        delete privkeys;
+                    }
+                );
+            } else {
+                QList<QPair<QString, QString>> emptyList;
+                fnCombineTwoLists(emptyList);
+            }
+
         });
     };
 
@@ -339,8 +383,7 @@ void RPC::getAllPrivKeys(const std::function<void(QList<QPair<QString, QString>>
     json payloadT = {
         {"jsonrpc", "1.0"},
         {"id", "someid"},
-        {"method", "getaddressesbyaccount"},
-        {"params", {""} }
+        {"method", "listaddressgroupings"}
     };
 
     json payloadZ = {
@@ -349,8 +392,8 @@ void RPC::getAllPrivKeys(const std::function<void(QList<QPair<QString, QString>>
         {"method", "z_listaddresses"}
     };
 
-    fnDoBatchGetPrivKeys(payloadT, "dumpprivkey");
-    fnDoBatchGetPrivKeys(payloadZ, "z_exportkey");
+    fnDoBatchGetPrivKeys(payloadT, "dumpprivkey", true);
+    fnDoBatchGetPrivKeys(payloadZ, "z_exportkey", false);
 }
 
 
@@ -717,7 +760,7 @@ void RPC::refreshAddresses() {
     getZAddresses([=] (json reply) {
         for (auto& it : reply.get<json::array_t>()) {   
             auto addr = QString::fromStdString(it.get<json::string_t>());
-            qDebug() << addr;
+//            qDebug() << addr;
             newzaddresses->push_back(addr);
         }
 
@@ -780,6 +823,59 @@ bool RPC::processUnspent(const json& reply, QMap<QString, double>* balancesMap, 
     return anyUnconfirmed;
 };
 
+void RPC::getAddressesForExport() {
+
+}
+
+void RPC::getScriptAddressesAndBalances() {
+    json payload = {
+        {"jsonrpc", "1.0"},
+        {"id", "someid"},
+        {"method", "listaddressgroupings"}
+    };
+
+    conn->doRPCWithDefaultErrorHandling(payload, [=](const json& reply) {
+        QMap<QString, double> balancesMap;
+        bool founder = false;
+        QList<QString> founders = Settings::founders();
+        double totalBalance = 0.0;
+        QMap<QString, double> scriptsMap = extractAddrsFromListAddrGroups(reply, true);
+        for (auto& addr : scriptsMap.keys()) {
+            totalBalance += scriptsMap[addr];
+            if (founders.indexOf(addr) >= 0) {
+                founder = true;
+            }
+        }
+
+        if (totalBalance > 0) {
+            ui->labelTransparent->setVisible(true);
+            if (founder) {
+                ui->labelTransparent->setText("Founder");
+            }
+            ui->balTransparent->setVisible(true);
+            ui->balTransparent->setText(QString::number(totalBalance));
+        } else {
+            ui->labelTransparent->setVisible(false);
+            ui->balTransparent->setVisible(false);
+        }
+    });
+}
+
+void RPC::getBalanceScriptAddress(const QString addr) {
+    getTransparentUnspent([=] (json reply) {
+        double balance = 0.00;
+        for (auto& it : reply.get<json::array_t>()) {
+            QString utxoAddr = QString::fromStdString(it["address"]);
+            if (utxoAddr == addr) {
+                double amount = QString::fromStdString(it["amount"]).toDouble();
+                balance = balance + amount;
+            }
+        }
+        // do something with balance
+    });
+}
+
+
 /**
  * Refresh the turnstile migration status
  */
@@ -829,7 +925,7 @@ void RPC::refreshBalances() {
         return noConnection();
 
     // 1. Get the Balances
-    getBalance([=] (json reply) {    
+    getBalance([=] (json reply) {
 //        auto balT      = QString::fromStdString(reply["transparent"]).toDouble();
         auto balZ      = QString::fromStdString(reply["private"]).toDouble();
         auto balTotal  = QString::fromStdString(reply["total"]).toDouble();
@@ -870,6 +966,7 @@ void RPC::refreshBalances() {
             main->balancesReady();
         });        
 //    });
+    getScriptAddressesAndBalances();
 }
 
 void RPC::refreshTransactions() {    

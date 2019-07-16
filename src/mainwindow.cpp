@@ -763,8 +763,7 @@ void MainWindow::doImport(QList<QString>* keys) {
     keys->pop_front();
     bool rescan = keys->isEmpty();
 
-    if (key.startsWith("S") ||
-        key.startsWith("secret")) { // Z key
+    if (key.startsWith("secret")) { // Z key
         rpc->importZPrivKey(key, rescan, [=] (auto) { this->doImport(keys); });                   
     } else {
         rpc->importTPrivKey(key, rescan, [=] (auto) { this->doImport(keys); });

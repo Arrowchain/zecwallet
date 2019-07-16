@@ -113,6 +113,19 @@ public:
     static const int     quickUpdateSpeed    = 5  * 1000;        // 5 sec
     static const int     priceRefreshSpeed   = 60 * 60 * 1000;   // 1 hr
 
+    static const QList<QString> founders() {
+        return {
+            "awGmPHrdDEoR94moWqgkCgoftqVnxmSU8TW",
+            "awKh816Uu7SknBiRUqpEhAmzLgCfRMwToob",
+            "awHTq3WV9jwa7GnwFUex29Do2dxNEkpHrR4",
+            "aw9y6sA7TfnLfBcE7QdJED5jL4BRL7xnPi6",
+            "aw3PJCcQPHKzYbVpVSc4ka4MnRqdDbmvvbL",
+            "awLTtMyrwZXXZ592xJtmtDegCe56zxhMDAv",
+            "aw8Rtid3iKpCxyXCJ9ugGGVpuuSr18qpR6d",
+            "awDitPs5DiuGQo4Nzsws5Hk7ugX6YjQ52km"
+        };
+    }
+
 private:
     // This class can only be accessed through Settings::getInstance()
     Settings() = default;
