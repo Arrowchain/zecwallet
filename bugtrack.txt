@@ -1,0 +1,77 @@
+unordered, searchable list of bugs. we can get more fancy as we need.
+
+REPO1: (break this into multiple issues)
+	merge the repos/make a unified arrow repo with the following characteristics:
+	1. one build script to rule them all
+		install all deps for common distros
+		build arrowd/arrowd-cli
+		build arrow_wallet or whatever its final name is
+		install service/daemon (win), schedule for run on system startup etc (config file options)	
+		runs launcher script at end
+	2. get rid of all zcash references
+	3. single launcher script at main repo level:
+		arrow_wallet.sh
+		a. starts service if not up, or fails out with good error message
+		b. then starts wallet app
+		
+	intended outcomes:
+		single button to press (build script) to go soup to nuts
+		
+		after first build, can just run launcher script and bootstraps whole system no bullshit
+		
+		individual components can be run manually as well
+		
+
+WALLET1:
+	when starting wallet, says cant start embedded node.
+	repro: just start wallet (even from qt creator) on a fresh install/build
+	
+
+
+
+KEY1: key import bug —ack
+	Private key import on gui, causes a chain break. Which also needs to be fixed.
+	
+	repro: "try importing addresses through the gui and through the cli. shielded and non-shielded addresses"
+	
+UI1: what does it mean to group two things in the gui? a start folder entry (or some win10 thing, im still running win7 — could go hack on my wife's box?)
+
+HANG1:
+The main issues have been wallet getting stuck at random blocks with chain needing rebuild with bootstrap. Chain breaks are the main complaint I have seen, latest one was a full rescan being done every time wallet was opened because the wallet wasn't shutting down properly (but that may not have been the fault of the wallet itself.)
+(Couldn't the wallet be programmed to do a proper shut down, on next opening?) So it's good to go next time. I'm also not a dev, so this might not be even feasible.
+Also, if a wallet stopped syncing due to a broadband outage, could a warning pop up to say "connection lost" so they don't try to reinstall the chain again, unnecessarily so.
+
+
+
+UI2: (windows)
+make so that when user clicks on daemon, nothing bad happens, and the app just works first and subsequent runs. 
+	options:
+	1. daemon/service silently exits
+	2. d/s pops up telling user what to do
+	3. d/s autolaunches wallet and gracefully exits (my favorite)
+	
+	Anacharsis, [25.11.19 10:29]
+	yeah, here is what a well behaved windows app install does:
+	1. install files to program files whatever
+	2. install whatever config as nec to user folders
+	3. start any needed service (rebooting as nec)
+	4. start gui things
+
+	Anacharsis, [25.11.19 10:30]
+	in step 3 that is handled, so the user does not have to interact with system stuff
+
+	Anacharsis, [25.11.19 10:31]
+	it's commonly possible within the gui app's settings to control whether the gui starts when windows does, but less common to control the service from there
+
+	Anacharsis, [25.11.19 10:31]
+	however, it's straightforward to make the gui app start the service before proceeding — or bomb out if the user has set the service to Disabled through the windows gui
+	
+	--all these changes need to be windows specific to avoid polluting linux/mac behavior
+
+
+NODE-ERROR1:
+root cause unknown so far
+2019-12-01 15:51:48 ERROR: AcceptToMemoryPool: shielded requirements not met
+	
+	
+	
