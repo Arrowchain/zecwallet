@@ -191,6 +191,20 @@ void TxTableModel::updateAllData() {
          return f;
      }
 
+     // bug: a callback is issued for section==4, but there are only 4 sections,
+     // see constructor above:
+     // headers << QObject::tr("Type") << QObject::tr("Address") << QObject::tr("Date/Time") << QObject::tr("Amount");
+     // JN: i can't tell yet what is requesting the mystery fifth section, so idk how to
+     // root fix the bug. for now just return nothing
+     // think this leads to an extra separator in the table but otherwise no harm?
+
+     if (section >= headers.count()) {
+         QString warn = QString::asprintf("section: %d orientation: %d role: %d", section, (int) orientation, role);
+         qDebug() << warn;
+         return QVariant();
+     }
+
+
      if (role == Qt::DisplayRole && orientation == Qt::Horizontal) {
          return headers.at(section);
      }
