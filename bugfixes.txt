@@ -1,0 +1,7 @@
+bugfixes:
+
+12/2/2019:
+Author: JN
+Fix: fixed exception in TxTableModel::headerData on Windows,
+apparently some code in the gui thinks there are 5 sections to that table, but there are only 4.  
+
