@@ -29,11 +29,12 @@ WALLET1:
 
 
 
-KEY1: key import bug —ack
-	Private key import on gui, causes a chain break. Which also needs to be fixed.
-	
-	repro: "try importing addresses through the gui and through the cli. shielded and non-shielded addresses"
-	
+
+
+
+
+
+
 UI1: what does it mean to group two things in the gui? a start folder entry (or some win10 thing, im still running win7 — could go hack on my wife's box?)
 
 HANG1:
@@ -73,5 +74,6 @@ NODE-ERROR1:
 root cause unknown so far
 2019-12-01 15:51:48 ERROR: AcceptToMemoryPool: shielded requirements not met
 	
-	
+
+
 	
