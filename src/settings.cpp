@@ -295,6 +295,7 @@ QString Settings::getZboardAddr() {
 //    else {
 //        return "zs10m00rvkhfm4f7n23e4sxsx275r7ptnggx39ygl0vy46j9mdll5c97gl6dxgpk0njuptg2mn9w5s";
 //    }
+    return QString("");
 }
 
 bool Settings::isValidAddress(QString addr) {
