@@ -165,7 +165,7 @@ public:
         parser.addOption(confOption);
 
         // Positional argument will specify a zcash payment URI
-        parser.addPositionalArgument("zcashURI", "An optional arrow URI to pay");
+        parser.addPositionalArgument("arrowURI", "An optional arrow URI to pay");
 
         parser.process(a);
 
@@ -178,8 +178,8 @@ public:
             return 0;            
         } 
 
-        QCoreApplication::setOrganizationName("zec-qt-wallet-org");
-        QCoreApplication::setApplicationName("zec-qt-wallet");
+        QCoreApplication::setOrganizationName("arrow-qt-wallet-org");
+        QCoreApplication::setApplicationName("arrow-qt-wallet");
 
         QString locale = QLocale::system().name();
         locale.truncate(locale.lastIndexOf('_'));   // Get the language code
