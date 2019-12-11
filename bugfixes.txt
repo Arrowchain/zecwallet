@@ -5,3 +5,35 @@ Author: JN
 Fix: fixed exception in TxTableModel::headerData on Windows,
 apparently some code in the gui thinks there are 5 sections to that table, but there are only 4.  
 
+12/9/2019:
+Author: JN
+NODE-ERROR2:
+root unknown
+"InvalidChainFound". when the problem occurs the node never gets any more blocks processed, and adds at least one IP to banned list (that's the signature).  Jayson notes logs around "InvalidChainFound" are probably where the bug is, and says " some kind of 'delete invalid block' would do it"
+
+    existing workaround:  ./src/arrowd -daemon-reindex
+        yuck!
+
+    Action: instrument node and find the root, then fix or workaround/restart
+
+     ./arrow-cli listbanned
+
+Fix: assert was removed after we determined:
+    0. experimentation with removing the erroneous blocks led to network fragmentation (locally only/no damage to the actual blockchain) -- unacceptable
+    1. negative value is intermittent and does not recur after blocks fully processed
+    2. we conjecture this is due to low node count in the ARW network at this time
+    3. will monitor and revisit as necessary
+
+KEY1: key import bug —ack
+    Author: J
+
+    Private key import on gui, causes a chain break. Which also needs to be fixed.
+    
+    repro: "try importing addresses through the gui and through the cli. shielded and non-shielded addresses"
+    
+
+    osboxes@osboxes:/arrow/arrow$ arrowd: wallet/wallet.cpp:2528: int CWallet::ScanForWalletTransactions(CBlockIndex*, bool): Assertion `pcoinsTip->GetSaplingAnchorAt(pindex->pprev->hashFinalSaplingRoot, saplingTree)' failed.
+
+    Fix: removed an assert IIRC, JN writing this/ask J
+
+
