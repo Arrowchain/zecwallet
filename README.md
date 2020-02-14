@@ -38,6 +38,11 @@ tar -xvf quiver-v0.1.7.tar.gz
 ./quiver-v0.1.7/quiver
 ```
 
+### Use the bootstrap
+
+Life is short, so use the bootstrap http://explorer.arrowchain.io/Arrow-bootstrap.rar
+_(source https://github.com/Arrowchain/docs.quiver/issues/38)_
+
 ## Troubleshooting
 For solutions to some common problems, see the Troubleshooting section in the [Quiver docs](http://quiverdocs.arrowchain.io/en/latest/).
 
