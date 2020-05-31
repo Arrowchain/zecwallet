@@ -113,7 +113,7 @@ const ToAddrBox = ({
         </div>
         <input
           type="text"
-          placeholder="Z or T address"
+          placeholder="Address"
           className={cstyles.inputbox}
           value={toaddr.to}
           onChange={e => updateToField(toaddr.id, e, null, null)}
