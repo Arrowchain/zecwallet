@@ -56,41 +56,31 @@ jobs:
         if: contains(matrix.os, 'ubuntu')
         with:
           name: ${{ matrix.os }}
-          path: release/Quiver_Fullnode_${{ env.VERSION }}_amd64.deb
+          path: release/Zecwallet_Fullnode_${{ env.VERSION }}_amd64.deb
       - name: Upload artifacts-AppImage
         uses: actions/upload-artifact@v2
         if: contains(matrix.os, 'ubuntu')
         with:
           name: ${{ matrix.os }}
-          path: release/Quiver Fullnode-${{ env.VERSION }}.AppImage
+          path: release/Zecwallet Fullnode-${{ env.VERSION }}.AppImage
       - name: Upload artifacts-dmg
         uses: actions/upload-artifact@v2
         if: contains(matrix.os, 'macos')
         with:
           name: ${{ matrix.os }}
-          path: release/Quiver Fullnode-${{ env.VERSION }}.dmg
+          path: release/Zecwallet Fullnode-${{ env.VERSION }}.dmg
       - name: Upload artifacts-zip
         uses: actions/upload-artifact@v2
         if: contains(matrix.os, 'windows')
         with:
           name: ${{ matrix.os }}
-          path: release/Quiver Fullnode-${{ env.VERSION }}-win.zip
+          path: release/Zecwallet Fullnode-${{ env.VERSION }}-win.zip
       - name: Upload artifacts-msi
         uses: actions/upload-artifact@v2
         if: contains(matrix.os, 'windows')
         with:
           name: ${{ matrix.os }}
-          path: release/Quiver Fullnode ${{ env.VERSION }}.msi
-      - name: compress binaries
-        env:
-          APP_VERSION: ${{ env.VERSION }}
-        run: |
-          tar -cf Quiver-artifacts-$APP_VERSION.tar.gz release/Quiver*
-      - name: Upload final artifacts
-        uses: actions/upload-artifact@v2
-        with:
-          name: quiver-artifacts
-          path: Quiver-artifacts-${{ env.VERSION }}.tar.gz
+          path: release/Zecwallet Fullnode ${{ env.VERSION }}.msi
 
   job_signbinaries:
     name: Consolidate and sign binaries
@@ -119,7 +109,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: macos-latest
-      - name: copy files
+      - name: copy binaries
         run: |
           cp windows-latest/* release/
           cp ubuntu-16.04/* release/
@@ -128,9 +118,10 @@ jobs:
         env:
           APP_VERSION: ${{ env.VERSION }}
         run: |
-          tar -cf Quiver-artifacts-$APP_VERSION.tar.gz release/Quiver*
+          bin/signbinaries.sh
+          tar -cf Zecwallet-artifacts-$APP_VERSION.tar.gz release/signatures*.zip release/Zecwallet*
       - name: Upload final artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: quiver-artifacts
-          path: Quiver-artifacts-${{ env.VERSION }}.tar.gz
+          name: zecwallet-artifacts
+          path: Zecwallet-artifacts-${{ env.VERSION }}.tar.gz
