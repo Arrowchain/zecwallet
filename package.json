@@ -1,7 +1,7 @@
 {
   "name": "quiver",
   "productName": "Quiver Fullnode",
-  "version": "0.9.11",
+  "version": "0.9.12",
   "description": "Quiver Fullnode (Electron version)",
   "scripts": {
     "build": "concurrently \"yarn build-main\" \"yarn build-renderer\"",
@@ -52,8 +52,8 @@
     ]
   },
   "build": {
-    "productName": "Quiver Fullnode",
-    "appId": "co.quiver.fullnode",
+    "productName": "Zecwallet Fullnode",
+    "appId": "co.zecwallet.fullnode",
     "afterAllArtifactBuild": "./afterSignHook.js",
     "files": [
       "dist/",
@@ -121,7 +121,7 @@
         "libxtst6",
         "libnss3"
       ],
-      "artifactName": "Quiver_Fullnode_${version}_${arch}.deb"
+      "artifactName": "Zecwallet_Fullnode_${version}_${arch}.deb"
     },
     "linux": {
       "category": "Development",
@@ -140,15 +140,15 @@
         "AppImage"
       ],
       "desktop": {
-        "Name": "Quiver",
-        "Comment": "Full node and wallet for Arrow",
+        "Name": "ZecWallet",
+        "Comment": "Full node and wallet for Zcash",
         "GenericName": "Wallet",
         "Type": "Application",
         "StartupNotify": true,
-        "StartupWMClass": "quiver",
+        "StartupWMClass": "zecwallet",
         "Categories": "Utility;",
-        "MimeType": "x-scheme-handler/quiver;",
-        "Keywords": "quiver;"
+        "MimeType": "x-scheme-handler/zcash;",
+        "Keywords": "zecwallet;"
       }
     },
     "directories": {
@@ -174,7 +174,7 @@
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Arrowchain/quiver/issues"
+    "url": "https://github.com/adityapk00/zecwallet-electron/issues"
   },
   "keywords": [
     "electron",
@@ -187,7 +187,7 @@
     "hot",
     "reload"
   ],
-  "homepage": "https://github.com/Arrowchain/quiver#readme",
+  "homepage": "https://github.com/adityapk00/zecwallet-electron#readme",
   "jest": {
     "testURL": "http://localhost/",
     "moduleNameMapper": {
