@@ -91,3 +91,46 @@ jobs:
         with:
           name: quiver-artifacts
           path: Quiver-artifacts-${{ env.VERSION }}.tar.gz
+
+  job_signbinaries:
+    name: Consolidate and sign binaries
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
+      - uses: actions/checkout@v1
+        with:
+          fetch-depth: 1
+      - name: Version
+        run: |
+          ./bin/printversion.sh
+      - name: Download ubuntu
+        uses: actions/download-artifact@v1
+        with:
+          name: ubuntu-16.04
+      - name: Download windows
+        uses: actions/download-artifact@v1
+        with:
+          name: windows-latest
+      - name: Download MacOS
+        uses: actions/download-artifact@v1
+        with:
+          name: macos-latest
+      - name: copy files
+        run: |
+          cp windows-latest/* release/
+          cp ubuntu-16.04/* release/
+          cp macos-latest/* release/
+      - name: Sign binaries
+        env:
+          APP_VERSION: ${{ env.VERSION }}
+        run: |
+          tar -cf Quiver-artifacts-$APP_VERSION.tar.gz release/Quiver*
+      - name: Upload final artifacts
+        uses: actions/upload-artifact@v1
+        with:
+          name: quiver-artifacts
+          path: Quiver-artifacts-${{ env.VERSION }}.tar.gz
