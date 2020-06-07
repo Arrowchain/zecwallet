@@ -56,28 +56,28 @@ jobs:
         if: contains(matrix.os, 'ubuntu')
         with:
           name: ${{ matrix.os }}
-          path: release/Zecwallet_Fullnode_${{ env.VERSION }}_amd64.deb
+          path: release/Quiver_Fullnode_${{ env.VERSION }}_amd64.deb
       - name: Upload artifacts-AppImage
         uses: actions/upload-artifact@v2
         if: contains(matrix.os, 'ubuntu')
         with:
           name: ${{ matrix.os }}
-          path: release/Zecwallet Fullnode-${{ env.VERSION }}.AppImage
+          path: release/Quiver_Fullnode-${{ env.VERSION }}.AppImage
       - name: Upload artifacts-dmg
         uses: actions/upload-artifact@v2
         if: contains(matrix.os, 'macos')
         with:
           name: ${{ matrix.os }}
-          path: release/Zecwallet Fullnode-${{ env.VERSION }}.dmg
+          path: release/Quiver_Fullnode-${{ env.VERSION }}.dmg
       - name: Upload artifacts-zip
         uses: actions/upload-artifact@v2
         if: contains(matrix.os, 'windows')
         with:
           name: ${{ matrix.os }}
-          path: release/Zecwallet Fullnode-${{ env.VERSION }}-win.zip
+          path: release/Quiver_Fullnode-${{ env.VERSION }}-win.zip
       - name: Upload artifacts-msi
         uses: actions/upload-artifact@v2
         if: contains(matrix.os, 'windows')
         with:
           name: ${{ matrix.os }}
-          path: release/Zecwallet Fullnode ${{ env.VERSION }}.msi
+          path: release/Quiver_Fullnode ${{ env.VERSION }}.msi
