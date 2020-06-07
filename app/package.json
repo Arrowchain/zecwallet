@@ -1,13 +1,13 @@
 {
   "name": "quiver",
   "productName": "Quiver Fullnode",
-  "version": "0.9.11",
+  "version": "1.0.1",
   "description": "Quiver Fullnode",
   "main": "./main.prod.js",
   "author": {
     "name": "Aditya Kulkarni",
     "email": "aditya@zecwallet.co",
-    "url": "https://github.com/adityapk00/zecwallet-electron"
+    "url": "https://github.com/arrowchain/quiver"
   },
   "scripts": {
     "electron-rebuild": "node -r ../internals/scripts/BabelRegister.js ../internals/scripts/ElectronRebuild.js",

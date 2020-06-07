@@ -226,7 +226,7 @@ class Sidebar extends PureComponent<Props, State> {
       openErrorModal(
         'Quiver Fullnode',
         <div className={cstyles.verticalflex}>
-          <div className={cstyles.margintoplarge}>Quiver Fullnode v0.9.11</div>
+          <div className={cstyles.margintoplarge}>Quiver Fullnode v1.0.1</div>
           <div className={cstyles.margintoplarge}>Built with Electron.</div>
           <div className={cstyles.margintoplarge}>Copyright (c) 2018-2020, Aditya Kulkarni.</div>
           <div className={cstyles.margintoplarge}>Copyright (c) 2020, Arrow.</div>

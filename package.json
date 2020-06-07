@@ -52,8 +52,8 @@
     ]
   },
   "build": {
-    "productName": "Zecwallet Fullnode",
-    "appId": "co.zecwallet.fullnode",
+    "productName": "Quiver Fullnode",
+    "appId": "co.quiver.fullnode",
     "afterAllArtifactBuild": "./afterSignHook.js",
     "files": [
       "dist/",
@@ -121,7 +121,7 @@
         "libxtst6",
         "libnss3"
       ],
-      "artifactName": "Zecwallet_Fullnode_${version}_${arch}.deb"
+      "artifactName": "Quiver_Fullnode_${version}_${arch}.deb"
     },
     "linux": {
       "category": "Development",
@@ -140,15 +140,15 @@
         "AppImage"
       ],
       "desktop": {
-        "Name": "ZecWallet",
-        "Comment": "Full node and wallet for Zcash",
+        "Name": "Quiver",
+        "Comment": "Full node and wallet for Arrow",
         "GenericName": "Wallet",
         "Type": "Application",
         "StartupNotify": true,
-        "StartupWMClass": "zecwallet",
+        "StartupWMClass": "quiver",
         "Categories": "Utility;",
-        "MimeType": "x-scheme-handler/zcash;",
-        "Keywords": "zecwallet;"
+        "MimeType": "x-scheme-handler/arrow;",
+        "Keywords": "arrow;"
       }
     },
     "directories": {
@@ -158,7 +158,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/adityapk00/zecwallet-electron.git"
+    "url": "git+https://github.com/arrowchain/quiver.git"
   },
   "author": {
     "name": "Aditya Kulkarni",

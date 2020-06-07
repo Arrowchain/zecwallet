@@ -62,22 +62,22 @@ jobs:
         if: contains(matrix.os, 'ubuntu')
         with:
           name: ${{ matrix.os }}
-          path: release/Quiver_Fullnode-${{ env.VERSION }}.AppImage
+          path: release/Quiver Fullnode-${{ env.VERSION }}.AppImage
       - name: Upload artifacts-dmg
         uses: actions/upload-artifact@v2
         if: contains(matrix.os, 'macos')
         with:
           name: ${{ matrix.os }}
-          path: release/Quiver_Fullnode-${{ env.VERSION }}.dmg
+          path: release/Quiver Fullnode-${{ env.VERSION }}.dmg
       - name: Upload artifacts-zip
         uses: actions/upload-artifact@v2
         if: contains(matrix.os, 'windows')
         with:
           name: ${{ matrix.os }}
-          path: release/Quiver_Fullnode-${{ env.VERSION }}-win.zip
+          path: release/Quiver Fullnode-${{ env.VERSION }}-win.zip
       - name: Upload artifacts-msi
         uses: actions/upload-artifact@v2
         if: contains(matrix.os, 'windows')
         with:
           name: ${{ matrix.os }}
-          path: release/Quiver_Fullnode ${{ env.VERSION }}.msi
+          path: release/Quiver Fullnode ${{ env.VERSION }}.msi
