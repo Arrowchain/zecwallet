@@ -224,16 +224,9 @@ export default class RPC {
   }
 
   async createNewAddress(zaddress: boolean) {
-    if (zaddress) {
-      const newaddress = await RPC.doRPC('z_getnewaddress', ['sapling'], this.rpcConfig);
+    const newaddress = await RPC.doRPC('z_getnewaddress', [], this.rpcConfig);
 
-      return newaddress.result;
-      // eslint-disable-next-line no-else-return
-    } else {
-      const newaddress = await RPC.doRPC('getnewaddress', [''], this.rpcConfig);
-
-      return newaddress.result;
-    }
+    return newaddress.result;
   }
 
   async getPrivKeyAsString(address: string): string {
