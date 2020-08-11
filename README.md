@@ -5,9 +5,7 @@ Quiver Fullnode is a wallet and full node for arrowd that runs on Linux, Windows
 
 # Installation
 
-**Note**: Quiver Fullnode will download the entire blockchain (about 26GB), and requires some familiarity with the command line. If you don't want to download the blockchain but prefer a Lite wallet, please check out [Quiver Lite](https://www.zecwallet.co).
-
-**Note**: Quiver Fullnode will download the entire blockchain (about 26GB), and requires some familiarity with the command line. If you don't want to download the blockchain but prefer a Lite wallet, please check out [Quiver Lite](https://www.zecwallet.co).
+**Note**: Quiver Fullnode will download the entire blockchain (about 26GB), and requires some familiarity with the command line. If you don't want to download the blockchain but prefer a Lite wallet, please check out [Quiver Lite](https://github.com/Arrowchain/quiver-lite/releases/tag/v1.0.2).
 
 Head over to the releases page and grab the latest installers or binary. https://github.com/Arrowchain/quiver/releases
 

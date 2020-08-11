@@ -1,24 +1,10 @@
 /* eslint-disable max-classes-per-file */
 import axios from 'axios';
 import _ from 'underscore';
-import hex from 'hex-string';
 import { TotalBalance, AddressBalance, Transaction, RPCConfig, TxDetail, Info } from './components/AppState';
 import Utils, { NO_CONNECTION } from './utils/utils';
 import SentTxStore from './utils/SentTxStore';
-
-const parseMemo = (memoHex: string): string | null => {
-  if (!memoHex || memoHex.length < 2) return null;
-
-  // First, check if this is a memo (first byte is less than 'f6' (246))
-  if (parseInt(memoHex.substr(0, 2), 16) >= 246) return null;
-
-  // Else, parse as Hex string
-  const textDecoder = new TextDecoder();
-  const memo = textDecoder.decode(hex.decode(memoHex));
-  if (memo === '') return null;
-
-  return memo;
-};
+import parseMemo from './utils/parseMemo';
 
 class OpidMonitor {
   opid: string;
@@ -273,7 +259,7 @@ export default class RPC {
   async fetchTandZTransactions() {
     const tresponse = await RPC.doRPC('listtransactions', [], this.rpcConfig);
     const zaddressesPromise = RPC.doRPC('z_listaddresses', [], this.rpcConfig);
-    const senttxstorePromise = SentTxStore.loadSentTxns();
+    const sentTxs = await SentTxStore.loadSentTxns();
 
     const ttxlist = tresponse.result.map(tx => {
       const transaction = new Transaction();
@@ -337,13 +323,32 @@ export default class RPC {
       })
     );
 
-    // Get transactions from the sent tx store
-    const sentTxns = await senttxstorePromise;
+    // Get missing info for transactions from the sent tx store
+    const sentTxList = await Promise.all(
+      sentTxs.map(async tx => {
+        const txresponse = await RPC.doRPC('gettransaction', [tx.txid], this.rpcConfig);
+
+        const transaction = new Transaction();
+        transaction.address = tx.address;
+        transaction.type = 'sent';
+        transaction.amount = tx.amount;
+        transaction.confirmations = txresponse.result.confirmations;
+        transaction.txid = tx.txid;
+        transaction.time = txresponse.result.time;
+        transaction.index = tx.index || 0;
+        transaction.detailedTxns = [new TxDetail()];
+        transaction.detailedTxns[0].address = tx.address;
+        transaction.detailedTxns[0].amount = tx.amount;
+        transaction.detailedTxns[0].memo = tx.detailedTxns[0].memo;
+
+        return transaction;
+      })
+    );
 
     // Now concat the t and z transactions, and call the update function again
     const alltxlist = ttxlist
       .concat(ztxlist)
-      .concat(sentTxns)
+      .concat(sentTxList)
       .sort((tx1, tx2) => {
         if (tx1.time && tx2.time) {
           return tx2.time - tx1.time;
@@ -410,6 +415,9 @@ export default class RPC {
 
           if (result.status === 'success') {
             const { txid } = result.result;
+
+            // save transaction
+            SentTxStore.writeSentTx(resultJson);
 
             monitor.fnOpenSendErrorModal(
               'Successfully Broadcast Transaction',
